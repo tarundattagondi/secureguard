@@ -57,11 +57,10 @@ with app.app_context():
     # Create all tables
     db.create_all()
 
-    # Clear existing data
-    ComplianceControl.query.delete()
-    Risk.query.delete()
-    ScanResult.query.delete()
-    Vendor.query.delete()
+    # Skip if already seeded
+    if ComplianceControl.query.count() > 0:
+        print("Database already seeded, skipping...")
+        exit(0)
 
     # Seed NIST Controls with random statuses for demo
     for ctrl in NIST_CONTROLS:
