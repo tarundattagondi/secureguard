@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Controls{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Compliance Controls</h1>
+</div>
+
+<div class="filters">
+    <a href="/controls" class="filter-btn {% if not current_framework and not current_status %}active{% endif %}">All</a>
+    <a href="/controls?status=Implemented" class="filter-btn {% if current_status == 'Implemented' %}active{% endif %}">Implemented</a>
+    <a href="/controls?status=Partially Implemented" class="filter-btn {% if current_status == 'Partially Implemented' %}active{% endif %}">Partial</a>
+    <a href="/controls?status=Not Implemented" class="filter-btn {% if current_status == 'Not Implemented' %}active{% endif %}">Not Implemented</a>
+    <a href="/controls?status=Not Applicable" class="filter-btn {% if current_status == 'Not Applicable' %}active{% endif %}">N/A</a>
+</div>
+
+<div class="section-card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Control ID</th>
+                <th>Category</th>
+                <th>Subcategory</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Owner</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for control in controls %}
+            <tr>
+                <td><strong>{{ control.control_id }}</strong></td>
+                <td>{{ control.category }}</td>
+                <td>{{ control.subcategory }}</td>
+                <td>{{ control.description[:80] }}{% if control.description|length > 80 %}...{% endif %}</td>
+                <td>
+                    <span class="badge badge-{{ control.status|lower|replace(' ', '-') }}">
+                        {{ control.status }}
+                    </span>
+                </td>
+                <td>{{ control.owner }}</td>
+                <td>
+                    <form method="POST" action="/controls/{{ control.id }}/update" style="display:inline;">
+                        <select name="status" onchange="this.form.submit()" style="background:#0a1628;color:#e0e0e0;border:1px solid #1a3a5c;border-radius:6px;padding:4px 8px;font-size:0.75rem;">
+                            <option value="Implemented" {% if control.status == 'Implemented' %}selected{% endif %}>Implemented</option>
+                            <option value="Partially Implemented" {% if control.status == 'Partially Implemented' %}selected{% endif %}>Partial</option>
+                            <option value="Not Implemented" {% if control.status == 'Not Implemented' %}selected{% endif %}>Not Implemented</option>
+                            <option value="Not Applicable" {% if control.status == 'Not Applicable' %}selected{% endif %}>N/A</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

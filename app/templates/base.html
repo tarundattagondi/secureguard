@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureGuard — {% block title %}Dashboard{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo">SecureGuard</a>
+        <div class="nav-links">
+            <a href="/" class="{% if request.path == '/' %}active{% endif %}">Dashboard</a>
+            <a href="/controls" class="{% if '/controls' in request.path %}active{% endif %}">Controls</a>
+            <a href="/risks" class="{% if '/risks' in request.path %}active{% endif %}">Risk Register</a>
+            <a href="/scans" class="{% if '/scans' in request.path %}active{% endif %}">Scan Results</a>
+        </div>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

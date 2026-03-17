@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Risk Register{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Risk Register</h1>
+</div>
+
+<div class="filters">
+    <a href="/risks" class="filter-btn {% if not current_status %}active{% endif %}">All</a>
+    <a href="/risks?status=Open" class="filter-btn {% if current_status == 'Open' %}active{% endif %}">Open</a>
+    <a href="/risks?status=In Progress" class="filter-btn {% if current_status == 'In Progress' %}active{% endif %}">In Progress</a>
+    <a href="/risks?status=Mitigated" class="filter-btn {% if current_status == 'Mitigated' %}active{% endif %}">Mitigated</a>
+    <a href="/risks?status=Accepted" class="filter-btn {% if current_status == 'Accepted' %}active{% endif %}">Accepted</a>
+</div>
+
+<!-- Add New Risk Form -->
+<div class="form-card">
+    <h3>Add New Risk</h3>
+    <form method="POST" action="/risks/add">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" name="title" required placeholder="Risk title">
+            </div>
+            <div class="form-group">
+                <label>Owner</label>
+                <input type="text" name="owner" placeholder="Risk owner">
+            </div>
+            <div class="form-group">
+                <label>Likelihood (1-5)</label>
+                <select name="likelihood">
+                    <option value="1">1 - Rare</option>
+                    <option value="2">2 - Unlikely</option>
+                    <option value="3" selected>3 - Possible</option>
+                    <option value="4">4 - Likely</option>
+                    <option value="5">5 - Almost Certain</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Impact (1-5)</label>
+                <select name="impact">
+                    <option value="1">1 - Insignificant</option>
+                    <option value="2">2 - Minor</option>
+                    <option value="3" selected>3 - Moderate</option>
+                    <option value="4">4 - Major</option>
+                    <option value="5">5 - Catastrophic</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Related Control</label>
+                <input type="text" name="related_control" placeholder="e.g., PR.AC-4">
+            </div>
+            <div class="form-group">
+                <label>Status</label>
+                <select name="status">
+                    <option value="Open">Open</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Mitigated">Mitigated</option>
+                    <option value="Accepted">Accepted</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" required placeholder="Describe the risk..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Mitigation Plan</label>
+            <textarea name="mitigation_plan" placeholder="Describe mitigation strategy..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Risk</button>
+    </form>
+</div>
+
+<!-- Risk Table -->
+<div class="section-card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Score</th>
+                <th>Likelihood</th>
+                <th>Impact</th>
+                <th>Status</th>
+                <th>Control</th>
+                <th>Owner</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for risk in risks %}
+            <tr>
+                <td><strong>{{ risk.title }}</strong></td>
+                <td>
+                    <span class="{% if risk.risk_score >= 20 %}risk-critical{% elif risk.risk_score >= 12 %}risk-high{% elif risk.risk_score >= 6 %}risk-medium{% else %}risk-low{% endif %}">
+                        {{ risk.risk_score }}
+                    </span>
+                </td>
+                <td>{{ risk.likelihood }}</td>
+                <td>{{ risk.impact }}</td>
+                <td>
+                    <span class="badge badge-{{ risk.status|lower|replace(' ', '-') }}">
+                        {{ risk.status }}
+                    </span>
+                </td>
+                <td>{{ risk.related_control }}</td>
+                <td>{{ risk.owner }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

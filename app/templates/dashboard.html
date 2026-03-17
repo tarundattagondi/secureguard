@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Security Compliance Dashboard</h1>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>COMPLIANCE SCORE</h3>
+        <div class="stat-number">{{ compliance_score }}%</div>
+        <p>Controls implemented</p>
+    </div>
+    <div class="stat-card">
+        <h3>OPEN RISKS</h3>
+        <div class="stat-number">{{ open_risks }}</div>
+        <p>Require mitigation</p>
+    </div>
+    <div class="stat-card">
+        <h3>LAST SCAN</h3>
+        <div class="stat-number">{{ scan_findings }}</div>
+        <p>Vulnerabilities found</p>
+    </div>
+    <div class="stat-card">
+        <h3>VENDORS</h3>
+        <div class="stat-number">{{ vendors_review }}</div>
+        <p>Under review</p>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <div class="chart-container">
+        <h3>Control Status Breakdown</h3>
+        <canvas id="controlChart"></canvas>
+    </div>
+    <div class="activity-feed">
+        <h3>Recent Risks</h3>
+        {% for risk in recent_risks %}
+        <div class="activity-item">
+            <strong>{{ risk.title }}</strong>
+            <span class="badge badge-{{ risk.status|lower|replace(' ', '-') }}">{{ risk.status }}</span>
+            <p>Score: {{ risk.risk_score }} | Owner: {{ risk.owner }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('controlChart').getContext('2d');
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Implemented', 'Partially Implemented', 'Not Implemented', 'Not Applicable'],
+        datasets: [{
+            data: [
+                {{ control_statuses['Implemented'] }},
+                {{ control_statuses['Partially Implemented'] }},
+                {{ control_statuses['Not Implemented'] }},
+                {{ control_statuses['Not Applicable'] }}
+            ],
+            backgroundColor: ['#00c853', '#ffab00', '#ff1744', '#78909c']
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: { color: '#e0e0e0' }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

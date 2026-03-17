@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Scan Results{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Security Scan Results</h1>
+</div>
+
+<!-- Summary Cards -->
+{% if scans %}
+{% set latest = scans[0] %}
+<div class="scan-summary">
+    <div class="scan-stat">
+        <div class="number risk-critical">{{ latest.critical_count }}</div>
+        <div class="label">Critical</div>
+    </div>
+    <div class="scan-stat">
+        <div class="number risk-high">{{ latest.high_count }}</div>
+        <div class="label">High</div>
+    </div>
+    <div class="scan-stat">
+        <div class="number risk-medium">{{ latest.medium_count }}</div>
+        <div class="label">Medium</div>
+    </div>
+    <div class="scan-stat">
+        <div class="number risk-low">{{ latest.low_count }}</div>
+        <div class="label">Low</div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Trend Chart -->
+<div class="section-card">
+    <h3>Vulnerability Trends (Last 10 Scans)</h3>
+    <canvas id="scanTrendChart"></canvas>
+</div>
+
+<!-- Scan History Table -->
+<div class="section-card">
+    <h3>Scan History</h3>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Scanner</th>
+                <th>Critical</th>
+                <th>High</th>
+                <th>Medium</th>
+                <th>Low</th>
+                <th>Total</th>
+                <th>Pipeline Run</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for scan in scans %}
+            <tr>
+                <td>{{ scan.scan_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td><strong>{{ scan.scan_type }}</strong></td>
+                <td><span class="risk-critical">{{ scan.critical_count }}</span></td>
+                <td><span class="risk-high">{{ scan.high_count }}</span></td>
+                <td><span class="risk-medium">{{ scan.medium_count }}</span></td>
+                <td><span class="risk-low">{{ scan.low_count }}</span></td>
+                <td>{{ scan.total_findings }}</td>
+                <td>{{ scan.pipeline_run_id }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('scanTrendChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ chart_data['labels'] | tojson }},
+        datasets: [
+            {
+                label: 'Critical',
+                data: {{ chart_data['critical'] | tojson }},
+                borderColor: '#ff1744',
+                backgroundColor: 'rgba(255, 23, 68, 0.1)',
+                tension: 0.3,
+                fill: true
+            },
+            {
+                label: 'High',
+                data: {{ chart_data['high'] | tojson }},
+                borderColor: '#ff6d00',
+                backgroundColor: 'rgba(255, 109, 0, 0.1)',
+                tension: 0.3,
+                fill: true
+            },
+            {
+                label: 'Medium',
+                data: {{ chart_data['medium'] | tojson }},
+                borderColor: '#ffab00',
+                backgroundColor: 'rgba(255, 171, 0, 0.1)',
+                tension: 0.3,
+                fill: true
+            },
+            {
+                label: 'Low',
+                data: {{ chart_data['low'] | tojson }},
+                borderColor: '#00c853',
+                backgroundColor: 'rgba(0, 200, 83, 0.1)',
+                tension: 0.3,
+                fill: true
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                labels: { color: '#e0e0e0' }
+            }
+        },
+        scales: {
+            x: {
+                ticks: { color: '#78909c' },
+                grid: { color: '#1a3a5c' }
+            },
+            y: {
+                ticks: { color: '#78909c' },
+                grid: { color: '#1a3a5c' }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}
