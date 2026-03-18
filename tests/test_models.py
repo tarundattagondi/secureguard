@@ -1,6 +1,4 @@
 from app.models import ComplianceControl, Risk, ScanResult, Vendor
-from datetime import datetime
-
 
 class TestComplianceControl:
     def test_create_control(self, db):

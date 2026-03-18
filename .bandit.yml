@@ -1,0 +1,16 @@
+skips:
+  - B101  # assert used in tests
+  - B104  # binding to all interfaces (needed for Docker)
+```
+
+---
+
+**Step 4: Update `requirements.txt`**
+```
+flask
+flask-sqlalchemy
+flask-migrate
+psycopg2-binary
+python-dotenv
+pytest
+pytest-cov

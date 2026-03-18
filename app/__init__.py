@@ -17,8 +17,7 @@ def create_app():
     migrate.init_app(app, db)
 
     # Import models so they're registered
-    from app import models
-
+    from app import models  # noqa: F401
     # Register blueprints
     from app.routes.dashboard import dashboard_bp
     from app.routes.controls import controls_bp
