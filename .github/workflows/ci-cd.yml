@@ -25,8 +25,7 @@ jobs:
 
       - name: Run flake8 linter
         run: |
-          flake8 app/ tests/ scripts/ --max-line-length=120 --ignore=E501,W503
-
+          flake8 app/ tests/ scripts/
   # ===== STAGE 2: Tests =====
   test:
     name: Unit Tests
