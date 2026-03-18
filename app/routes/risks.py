@@ -45,3 +45,4 @@ def update_risk(risk_id):
     risk.mitigation_plan = request.form.get('mitigation_plan', risk.mitigation_plan)
     db.session.commit()
     return redirect(url_for('risks.list_risks'))
+

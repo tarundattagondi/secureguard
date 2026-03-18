@@ -112,3 +112,4 @@ class TestScans:
     def test_scans_empty_state(self, client):
         response = client.get('/scans/')
         assert response.status_code == 200
+

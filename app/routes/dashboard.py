@@ -41,3 +41,4 @@ def index():
                            vendors_review=vendors_review,
                            recent_risks=recent_risks,
                            control_statuses=control_statuses)
+

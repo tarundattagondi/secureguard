@@ -81,3 +81,4 @@ class Vendor(db.Model):
 
     def __repr__(self):
         return f'<Vendor {self.name}: {self.risk_rating}>'
+

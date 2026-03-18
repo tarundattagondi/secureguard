@@ -31,3 +31,4 @@ def update_control(control_id):
     control.evidence_link = request.form.get('evidence_link', control.evidence_link)
     db.session.commit()
     return redirect(url_for('controls.list_controls'))
+

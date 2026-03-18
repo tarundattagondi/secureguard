@@ -18,3 +18,4 @@ def list_scans():
     }
 
     return render_template('scan_results.html', scans=scans, chart_data=chart_data)
+

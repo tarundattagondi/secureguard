@@ -56,3 +56,4 @@ class TestRiskScoreCalculation:
     def test_min_risk_score(self):
         """Minimum possible risk score is 1."""
         assert 1 * 1 == 1
+
